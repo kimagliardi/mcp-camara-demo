@@ -165,19 +165,3 @@ def load_openapi_with_refs(self, file_path: str):
 
 def get_request_schema(self):
     return self.openapi_doc["paths"][self.api_path][self.method]["requestBody"]["content"]["application/json"]["schema"]
-
-# # Example usage
-# if __name__ == "__main__":
-#     # Test with your YAML file
-#     yaml_file = "api_spec.yaml"  # Your OpenAPI YAML file
-#     api_path = "/network-slices"  # Your API endpoint
-    
-#     test_text = "Create a slice named 'test-slice' with 20 Mbps throughput and priority 1"
-    
-#     try:
-#         result = interpret_natural_language(test_text, yaml_file, api_path)
-#         print("\nSuggested API call:")
-#         print(json.dumps(result, indent=2))
-#     except Exception as e:
-#         print(f"Error: {e}")
-#         print("Make sure your YAML file exists and has the correct structure")
