@@ -8,13 +8,6 @@ def build_slice_request(request: str) -> str:
     Parse natural language request and validate it against the NetworkSliceBooking API spec
     """
     structured_data = interpret_natural_language(request)
-    openapi_file = "NetworkSliceBooking.yaml"
-    try:
-        openapi_doc = load_openapi_with_refs(openapi_file)
-        schema = get_request_schema(openapi_doc, "/sessions", "post")
-    except Exception as e:
-        return f"⚠️ Failed to load API schema: {e}"
-
     return structured_data
 
 def interpret_natural_language(text: str, yaml_file: str, api_path: str, method: str = "POST") -> dict:
