@@ -4,9 +4,9 @@ import jsonref
 from typing import Dict, List, Any, Optional
 
 class OpenAPIAnalyzer:
-    def __init__(self, yaml_file_path: str, api_path: str, method: str = "POST"):
-        self.openapi_doc = self.load_openapi_with_refs("NetworkSliceBooking.yaml")
-        self.api_path = api_path
+    def __init__(self, yaml_file_path: str, method: str = "POST"):
+        self.openapi_doc = self.load_openapi_with_refs(yaml_file_path)
+        self.api_path = "/sessions"
         self.method = method.lower()
         self.schema = self.get_request_schema()
         
@@ -14,6 +14,31 @@ class OpenAPIAnalyzer:
         with open(file_path, 'r') as f:
             spec = yaml.safe_load(f)
             return jsonref.JsonRef.replace_refs(spec)
+    
+    def describe_api(self) -> str:
+            """Return a string summary of all paths, methods, and request fields."""
+            summary = []
+            paths = self.openapi_doc.get("paths", {})
+
+            for path, methods in paths.items():
+                print(f"Path: {path}")
+                summary.append(f"Path: {path}")
+                for method, details in methods.items():
+                    summary.append(f"  Method: {method.upper()}")
+                    # Try to get request fields if available
+                    try:
+                        schema = details["requestBody"]["content"]["application/json"]["schema"]
+                        properties = schema.get("properties", {})
+                        if properties:
+                            summary.append("    Request fields:")
+                            for field, prop in properties.items():
+                                ftype = prop.get("type", "unknown")
+                                summary.append(f"      - {field} ({ftype})")
+                        else:
+                            summary.append("    No request fields.")
+                    except Exception:
+                        summary.append("    No request body/schema.")
+            return "\n".join(summary)
 
     def get_request_schema(self):
         return self.openapi_doc["paths"][self.api_path][self.method]["requestBody"]["content"]["application/json"]["schema"]

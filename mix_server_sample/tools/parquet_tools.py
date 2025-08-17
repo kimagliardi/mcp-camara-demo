@@ -12,7 +12,6 @@ def summarize_parquet_file(filename: str) -> str:
     return read_parquet_summary(filename)
 
 @mcp.tool()
-
 def get_parquet_value(filename: str) -> str:
     """return the first row of parquet file"""
 
